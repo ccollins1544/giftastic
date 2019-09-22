@@ -87,6 +87,7 @@ function renderButtons(){
 $(function(){
   renderButtons();
 
+  // Add Giph Button
   $('#add-topic').on('click', function(e){
     e.preventDefault();
 
@@ -96,10 +97,12 @@ $(function(){
     renderButtons();
   });
 
-  $('.giph.btn').on('click',function(){
+  // Search Giphs
+  $('#giph-buttons').on('click', '.giph.btn', function(){
     searchGiphy( $(this).text().trim() );
   });
 
+  // Toggle Aninimated Giph
   $('#all-giphs-view').on('click', '.giph.card-img-top', function() {
     console.log(this);
     var state = $(this).attr('data-state');
