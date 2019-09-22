@@ -43,14 +43,22 @@
   <article class="content-wrapper" id="main-container">
     <section class="section-block jumbotron" id="main-section">
       <div class="container">
-        <div class="row first-row">
-
+        <div class="row first-row d-flex justify-content-between">
+          <h1>Giph Search</h1>
+          <form class="form-inline" id="giph-search-form">
+            <div class="form-group mb-2">
+              <!-- <label for="search-input">Add Giph Topics</label> -->
+              <input type="text" class="form-control" id="search-input" placeholder="Add Giph Topic">
+            </div>
+  
+            <button type="submit" class="btn btn-primary mb-2" id="add-topic">Add</button>
+          </form><!-- #giph-search-form -->
         </div><!-- .first-row -->
 
+        <!-- Giph topics will be dumped here as buttons -->
+        <div class="row" id="giph-buttons"></div><!-- #giph-buttons -->
 
-        <div class="row">
-  
-        </div><!-- .row -->
+        <div class="row" id="all-giphs-view"></div><!-- #all-giphs-view -->
 
       </div><!-- .container -->
     </section><!-- #main-section -->
