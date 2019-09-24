@@ -69,7 +69,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
   }
 
   if (rating !== undefined && rating !== "") {
-    queryParams.rating = String(rating.trim());
+    queryParams.rating = rating.trim();
   }
 
   // Combine queryURL with queryParams
@@ -135,6 +135,55 @@ function movieSearch(movie, _type, _year, _pageNumber){
   return;
 }
 
+function moviePlot(id, movie, plot="short"){
+  var APIKEY = "9533d959";
+
+  // -------------[ Build Query URL ]----------------
+  var queryURL = "https://www.omdbapi.com/?"
+  var queryParams = {};
+  queryParams.apikey = APIKEY;
+
+  if(id === undefined && id === "" && movie === undefined && movie === "") { return; }
+  if(id !== undefined && id !== ""){
+    queryParams.i = id.trim();
+  }
+
+  if(movie !== undefined && movie !== ""){
+    queryParams.t = movie.trim();
+  }
+
+  if(plot !== undefined && plot !== ""){
+    queryParams.plot = plot.trim();
+  }
+
+  // Combine queryURL with queryParams
+  queryURL = queryURL + $.param(queryParams);
+  console.log("-------------------------------------------------");
+  console.log(queryURL);
+  console.log("-------------------------------------------------");
+  lastQuery = queryURL;
+
+  
+  $.ajax({
+    url: queryURL,
+    method: "GET",
+  }).then(function(response){
+    if(response.Response === "False"){
+      alert(response.Error);
+      return;
+    }
+
+    var imdbID = response.imdbID;
+    var moviePlot = $("<p>").text(response.Plot);
+    var movieYear = $("<p>").text("Year: " + response.Year);
+    var movieRated = $("<p>").addClass("font-weight-bold").text("Rated: " + response.Rated);
+    var movieReleased = $("<p>").text("Released: " + response.Released);
+    var movieRuntime = $("<p>").text("Runtime: " + response.Runtime);
+    $("#" + imdbID).closest('.card').find('.card-text').empty();
+    $("#" + imdbID).closest('.card').find('.card-text').append(moviePlot, movieYear, movieRated, movieReleased, movieRuntime);
+  });
+}
+
 function updatePage(response) {
   var resultsDiv = $("#all-giphs-view");
   var queryParams = deparam(lastQuery);
@@ -150,6 +199,10 @@ function updatePage(response) {
     }
     
     for (var i = Data.length - 1; i >= 0; i--) {
+      if( i < Data.length - 2 && Data[i].id === Data[i+1].id ){ 
+        continue; // prevents doubles from showing
+      }
+
       var still_image = Data[i].images.original_still.url;
       var animated_image = Data[i].images.original.url;
       var slug = Data[i].slug;
@@ -160,7 +213,7 @@ function updatePage(response) {
       var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
       var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
 
-      var GIPH = $("<img>").addClass("card-img-top giph").attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
+      var GIPH = $("<img>").addClass("card-img-top giph").attr("id",Data[i].id).attr("data-id",Data[i].id).attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
       GIPH = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(GIPH, card_body);
       resultsDiv.prepend(GIPH);
     }
@@ -176,6 +229,10 @@ function updatePage(response) {
     var Data = response.Search;
     
     for (var i = Data.length - 1; i >= 0; i--){
+      if( i < Data.length - 2 && Data[i].imdbID === Data[i+1].imdbID ){
+        continue; // prevents doubles from showing
+      }
+
       var poster = (Data[i].Poster !== "N/A") ? Data[i].Poster : "https://placehold.it/250";
       var title = Data[i].Title;
       var subtitle = queryParams.s + " - " + Data[i].Type;
@@ -186,7 +243,7 @@ function updatePage(response) {
       year = $("<p>").addClass("card-text font-weight-bold").text("Year: " + year);
       var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, year);
 
-      var MOVIE = $("<img>").addClass("card-img-top movie").attr("data-id", Data[i].imdbID).attr("src",poster).attr("alt", Data[i].Title);
+      var MOVIE = $("<img>").addClass("card-img-top movie").attr("id",Data[i].imdbID).attr("data-id", Data[i].imdbID).attr("src",poster).attr("alt", Data[i].Title);
       MOVIE = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(MOVIE, card_body);
       resultsDiv.prepend(MOVIE);
     }
@@ -223,8 +280,7 @@ function renderButtons() {
   return;
 }
 
-function reset(e) {
-  e.preventDefault();
+function reset() {
   if($(this).attr("id") === "reset"){
     TOPICS = defaultTopics.slice(0);
     FavoriteTopics = [];
@@ -268,9 +324,7 @@ $(function () {
   $('#clear').on('click', reset);
 
   // Search Giphs
-  $('#button-section').on('click', '.giph.btn', function (e) {
-    e.preventDefault();
-
+  $('#button-section').on('click', '.giph.btn', function () {
     var searchType = $("#search-type").children("option:selected").val();
     var searchTerm = $(this).text();
     searchTerm = (searchTerm !== undefined) ? searchTerm.trim() : "";
@@ -313,8 +367,7 @@ $(function () {
   });
 
   // Toggle Rating CSS
-  $("#gif-search-form .form-check-input[type=radio]").click(function(e){
-    e.preventDefault();
+  $("#gif-search-form .form-check-input[type=radio]").click(function(){
     var Toggled = parseInt($(this).data('toggled'));
     
     if(Toggled === 0){
@@ -355,7 +408,7 @@ $(function () {
   // Toggle Aninimated Giph
   $('#all-giphs-view').on('click', '.giph.card-img-top', function () {
     var state = $(this).attr('data-state');
-
+    
     if (state === "still") {
       $(this).attr("src", $(this).attr("data-animated"));
       $(this).attr("data-state", "animate");
@@ -363,6 +416,12 @@ $(function () {
       $(this).attr("src", $(this).attr("data-still"));
       $(this).attr("data-state", "still");
     }
+  });
+  
+  // Get movie plot
+  $('#all-giphs-view').on('click', '.movie.card-img-top', function () {
+    var imdbID = $(this).data("id");
+    moviePlot(imdbID);
   });
 
   // Search Type on Change Show Different Parameters

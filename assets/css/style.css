@@ -91,7 +91,7 @@ article#main-container {
  * header 63px + main-container margin 40px + section margin 50px + footer 83px = 236px
  */
 #main-container.content-wrapper {
-  min-height: calc(100vh - 236px);
+  min-height: calc(100vh - 281px);
 }
 
 section#main-section {
