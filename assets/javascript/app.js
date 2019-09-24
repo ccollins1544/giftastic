@@ -185,16 +185,16 @@ function moviePlot(id, movie, plot="short"){
 }
 
 function updatePage(response) {
-  var resultsDiv = $("#all-giphs-view");
+  var resultsDiv = $("#all-gifs-view");
   var queryParams = deparam(lastQuery);
 
   if(lastQuery.split("/").indexOf("api.giphy.com") !== -1) {
-    // Update Page for GIPHY
+    // Update Page for gif
     var Data = response.data;
 
     // Detect False Response
     if(Data.length === 0 ){
-      alert("Giph not found!");
+      alert("gif not found!");
       return;
     }
     
@@ -213,9 +213,9 @@ function updatePage(response) {
       var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
       var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
 
-      var GIPH = $("<img>").addClass("card-img-top giph").attr("id",Data[i].id).attr("data-id",Data[i].id).attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
-      GIPH = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(GIPH, card_body);
-      resultsDiv.prepend(GIPH);
+      var GIF = $("<img>").addClass("card-img-top gif").attr("id",Data[i].id).attr("data-id",Data[i].id).attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
+      GIF = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(GIF, card_body);
+      resultsDiv.prepend(GIF);
     }
     
   }else if(lastQuery.split("/").indexOf("www.omdbapi.com") !== -1) {
@@ -254,25 +254,25 @@ function updatePage(response) {
 }
 
 function renderButtons() {
-  $("#favorite-giph-buttons").empty();
-  $("#giph-buttons").empty();
+  $("#favorite-gif-buttons").empty();
+  $("#gif-buttons").empty();
   
   if(FavoriteTopics.length > 0 ){
-    $("#favorite-giph-buttons").show();
+    $("#favorite-gif-buttons").show();
     var favTitle = $("<i>").addClass("far fa-star");
     favTitle = $("<h4>").append(favTitle," Favorites");
-    $("#favorite-giph-buttons").append(favTitle);
+    $("#favorite-gif-buttons").append(favTitle);
     for (var i = 0; i < FavoriteTopics.length; i++) {
-      var btn = $("<button>").addClass("btn btn-dark giph").attr("data-topic-index", i).text(FavoriteTopics[i]);
-      $("#favorite-giph-buttons").append(btn);
+      var btn = $("<button>").addClass("btn btn-dark gif").attr("data-topic-index", i).text(FavoriteTopics[i]);
+      $("#favorite-gif-buttons").append(btn);
     }
   }else{
-    $("#favorite-giph-buttons").hide();
+    $("#favorite-gif-buttons").hide();
   }
 
   for (var i = 0; i < TOPICS.length; i++) {
-    var btn = $("<button>").addClass("btn btn-dark giph").attr("data-topic-index", i).text(TOPICS[i]);
-    $("#giph-buttons").append(btn);
+    var btn = $("<button>").addClass("btn btn-dark gif").attr("data-topic-index", i).text(TOPICS[i]);
+    $("#gif-buttons").append(btn);
   }
 
   // Save to LocalStorage
@@ -287,7 +287,7 @@ function reset() {
   }
 
   renderButtons();
-  $("#all-giphs-view").empty();
+  $("#all-gifs-view").empty();
   return;
 }
 
@@ -298,7 +298,7 @@ function reset() {
 $(function () {
   renderButtons();
 
-  // Add Giph Button
+  // Add gif Button
   $('#add-topic').on('click', function (e) {
     e.preventDefault();
 
@@ -323,8 +323,8 @@ $(function () {
   $('#reset').on('click', reset);
   $('#clear').on('click', reset);
 
-  // Search Giphs
-  $('#button-section').on('click', '.giph.btn', function () {
+  // Search gifs
+  $('#button-section').on('click', '.gif.btn', function () {
     var searchType = $("#search-type").children("option:selected").val();
     var searchTerm = $(this).text();
     searchTerm = (searchTerm !== undefined) ? searchTerm.trim() : "";
@@ -350,7 +350,7 @@ $(function () {
     pageNumber = (pageNumber !== undefined) ? pageNumber.trim() : "";
 
     switch (searchType) {
-      case "giph":
+      case "gif":
         searchGiphy(searchTerm, limit, offset, rating);
         break;
     
@@ -405,8 +405,8 @@ $(function () {
 
   });
 
-  // Toggle Aninimated Giph
-  $('#all-giphs-view').on('click', '.giph.card-img-top', function () {
+  // Toggle Aninimated gif
+  $('#all-gifs-view').on('click', '.gif.card-img-top', function () {
     var state = $(this).attr('data-state');
     
     if (state === "still") {
@@ -419,7 +419,7 @@ $(function () {
   });
   
   // Get movie plot
-  $('#all-giphs-view').on('click', '.movie.card-img-top', function () {
+  $('#all-gifs-view').on('click', '.movie.card-img-top', function () {
     var imdbID = $(this).data("id");
     moviePlot(imdbID);
   });
@@ -429,7 +429,7 @@ $(function () {
     var searchType = $(this).children("option:selected").val();
     
     switch (searchType) {
-      case "giph":
+      case "gif":
         $("#movie-search-form").slideUp();
         $("#gif-search-form").slideDown("slow");
         break;
