@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.2
+ * Version: 2.3
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -21,7 +21,7 @@
 
 3.0 MAIN LAYOUT INFO
   3.1 AVATAR
-  3.2 Game Layout
+  3.2 Game Search Elements
   3.3 Results Cards
 
 4.0 FOOTER
@@ -560,7 +560,7 @@ img {
   box-shadow: 0px 12px 18px -6px var(--primary-menu-background);
 }
 
-/* 3.2 Game Layout
+/* 3.2 Game Search Elements
 /*------------------------------------------------------*/
 #button-section {
   padding: 15px 0 0 0;
