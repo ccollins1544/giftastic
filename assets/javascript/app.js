@@ -11,17 +11,15 @@
  * 2. Document Ready
  * 
  * @todo
- * -Clean up CSS on Filter Parameters
  * -don't allow duplicates
  * -make fully mobile responsive
- * -don't overwrite existing gifs...but add 10 gifs to existing page. 
- * -Add metadata (title, tags, etc)
  * -Integrate with additional apis (omdb, bands in town)
  * -Allow users to add their favorite gifs...use localStorage or cookies to save this.
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
 var defaultTopics = ["games"];
 var TOPICS = defaultTopics.slice(0);
+var FavoriteTopics = [];
 var lastQuery;
 
 /* ===============[ 0. Functions ]=======================*/
@@ -65,15 +63,15 @@ function searchGiphy(searchTerm, limit, offset, rating) {
   };
   queryParams.q = String(searchTerm.trim());
 
-  if (limit !== undefined) {
+  if (limit !== undefined && limit !== "") {
     queryParams.limit = parseInt(limit.trim());
   }
 
-  if (offset !== undefined) {
+  if (offset !== undefined && offset !== "") {
     queryParams.offset = parseInt(offset.trim());
   }
 
-  if (rating !== undefined) {
+  if (rating !== undefined && rating !== "") {
     queryParams.rating = String(rating.trim());
   }
 
@@ -92,32 +90,55 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
 function updatePage(response) {
   var Data = response.data;
-  console.log(Data);
+  console.log(response.data);
 
   var resultsDiv = $("#all-giphs-view");
-  resultsDiv.empty();
+  // resultsDiv.empty(); // Each request should ADD 10 gifs to the page, NOT overwrite the existing gifs.
+  
+  var category = deparam(lastQuery);
 
   for (var i = 0; i < Data.length; i++) {
     var still_image = Data[i].images.original_still.url;
     var animated_image = Data[i].images.original.url;
     var slug = Data[i].slug;
+    var title = Data[i].title;
+    title = $("<h5>").addClass("card-title").text(title);
+    subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(category.q);
+
     var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
-    rating = $("<div>").addClass("card-body").html(rating);
+    var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
 
     var GIPH = $("<img>").addClass("card-img-top giph").attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
-    GIPH = $("<div>").addClass("card col-3").html(GIPH);
-    GIPH.append(rating);
-    resultsDiv.append(GIPH);
+    GIPH = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").html(GIPH);
+    GIPH.append(card_body);
+    resultsDiv.prepend(GIPH);
   }
 }
 
 function renderButtons() {
+  $("#favorite-giph-buttons").empty();
   $("#giph-buttons").empty();
+
+  if(FavoriteTopics.length > 0 ){
+    $("#favorite-giph-buttons").show();
+    var favTitle = $("<i>").addClass("far fa-star");
+    favTitle = $("<h4>").append(favTitle," Favorites");
+    $("#favorite-giph-buttons").append(favTitle);
+    for (var i = 0; i < FavoriteTopics.length; i++) {
+      var btn = $("<button>").addClass("btn btn-dark giph").attr("data-topic-index", i).text(FavoriteTopics[i]);
+      $("#favorite-giph-buttons").append(btn);
+    }
+  }else{
+    $("#favorite-giph-buttons").hide();
+  }
 
   for (var i = 0; i < TOPICS.length; i++) {
     var btn = $("<button>").addClass("btn btn-dark giph").attr("data-topic-index", i).text(TOPICS[i]);
     $("#giph-buttons").append(btn);
   }
+
+  console.log("Favorites",FavoriteTopics);
+  console.log("Topics",TOPICS);
 }
 
 function reset() {
@@ -142,8 +163,14 @@ $(function () {
 
     var topic = $('#search-input').val().trim();
     $('#search-input').val("");
-    TOPICS.push(topic);
 
+    var favorite = parseInt($("#favorite").data('toggled'));
+    if(favorite === 1 ){
+      FavoriteTopics.push(topic);
+    }else{
+      TOPICS.push(topic);
+    }
+    
     renderButtons();
   });
 
@@ -151,12 +178,58 @@ $(function () {
   $('#clear').on('click', reset);
 
   // Search Giphs
-  $('#giph-buttons').on('click', '.giph.btn', function () {
-    var rating = $("#gif-search-form input[name='ratingOption']:checked").val().trim();
-    var limit = $("#gif-search-form #limit").val().trim();
-    var offset = $("#gif-search-form #offset").val().trim();
+  $('#button-section').on('click', '.giph.btn', function () {
+    var searchTerm = $(this).text();
+    searchTerm = (searchTerm !== undefined) ? searchTerm.trim() : "";
 
-    searchGiphy($(this).text().trim(), limit, offset, rating);
+    var rating = $("#gif-search-form input[name='ratingOption']:checked").val();
+    rating = (rating !== undefined) ? rating.trim() : "";
+
+    var limit = $("#gif-search-form #limit").val();
+    limit = (limit !== undefined) ? limit.trim() : "";
+
+    var offset = $("#gif-search-form #offset").val();
+    offset = (offset !== undefined) ? offset.trim() : "";
+    
+    searchGiphy(searchTerm, limit, offset, rating);
+  });
+
+  // Toggle Rating CSS
+  $("#gif-search-form .form-check-input[type=radio]").click(function(){
+    var Toggled = parseInt($(this).data('toggled'));
+    
+    if(Toggled === 0){
+      $(this).data('toggled',1);
+      $(".form-check-label").css({'color':'#F0F5F9','font-weight':'normal'});
+      $(this).next().css({'color':'#0092CA','font-weight':'bold'});
+    }else{
+      $(this).data('toggled',0);
+      $(this).next().css({'color':'#F0F5F9','font-weight':'normal'});
+    }
+    
+  });
+
+  // Toggle Favorite 
+  $("#favorite").click(function(){
+    var Toggled = parseInt($(this).data('toggled'));
+    var unfavorite = $("<i>").addClass("far fa-star");
+    var favorite = $("<i>").addClass("fas fa-star");
+    
+    if(Toggled === 0){
+      $(this).data('toggled',1);
+      $(this).html("");
+      $(this).append(favorite," Favorite");
+      $(this).removeClass("btn-primary");
+      $(this).addClass("btn-dark");
+    }else{
+      $(this).data('toggled',0);
+      $(this).html("");
+      $(this).append(unfavorite," Favorite");
+      $(this).removeClass("btn-dark");
+      $(this).addClass("btn-primary");
+    }
+
+    // console.log($(this).data("toggled"));
   });
 
   // Toggle Aninimated Giph

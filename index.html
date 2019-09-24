@@ -31,7 +31,7 @@
             <form class="form-inline ml-auto" id="gif-search-form">
               <h4>Limit</h4>
               <div class="form-group">
-                <input type="number" class="form-control" id="limit" name="limit" min="1" max="50" value="25">
+                <input type="number" class="form-control" id="limit" name="limit" min="1" max="50" value="10">
               </div>
 
               <h4>Offset</h4>
@@ -41,37 +41,26 @@
 
               <h4>Rating</h4>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ratingOption" id="no-rating" value="" checked="true">
-                <label class="form-check-label" for="no-rating">None</label>
-              </div>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ratingOption" id="grating" value="g">
+                <input class="form-check-input" type="radio" name="ratingOption" id="grating" value="g" data-toggled="0">
                 <label class="form-check-label" for="grating">G</label>
               </div>
               
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ratingOption" id="pgrating" value="pg">
+                <input class="form-check-input" type="radio" name="ratingOption" id="pgrating" value="pg" data-toggled="0">
                 <label class="form-check-label" for="pgrating">PG</label>
               </div>
 
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ratingOption" id="pg13rating" value="pg-13">
+                <input class="form-check-input" type="radio" name="ratingOption" id="pg13rating" value="pg-13" data-toggled="0">
                 <label class="form-check-label" for="pg13rating">PG-13</label>
               </div>
 
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ratingOption" id="rrating" value="r">
+                <input class="form-check-input" type="radio" name="ratingOption" id="rrating" value="r" data-toggled="0">
                 <label class="form-check-label" for="rrating">R</label>
               </div>
             </form>
       
-          <!-- 
-            <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#" id="_">_</a>
-            </li>
-          </ul>.navbar-nav -->
           </div><!-- .navbar-collapse -->
 
       </nav><!-- #main-nav -->
@@ -80,6 +69,7 @@
 
   <div class="container section-block" id="button-section">
     <!-- Giph topics will be dumped here as buttons -->
+    <div class="row" id="favorite-giph-buttons"></div><!-- #favorite-giph-buttons -->
     <div class="row" id="giph-buttons"></div><!-- #giph-buttons -->
   </div>
 
@@ -97,6 +87,7 @@
             </div>
   
             <button type="submit" class="btn btn-primary mb-2" id="add-topic"><i class="fas fa-plus"></i> Add</button>
+            <button type="button" class="btn btn-primary mb-2" id="favorite" data-toggled="0"><i class="far fa-star"></i> Favorite</button>
             <button type="reset" class="btn btn-secondary mb-2" id="clear"><i class="fas fa-minus"></i> Clear</button>
             <button type="reset" class="btn btn-secondary mb-2" id="reset"><i class="fa fa-trash"></i> Reset</button>
           </form><!-- #giph-search-form -->
