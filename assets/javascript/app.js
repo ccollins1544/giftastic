@@ -11,15 +11,13 @@
  * 2. Document Ready
  * 
  * @todo
- * -don't allow duplicates
  * -make fully mobile responsive
  * -Integrate with additional apis (omdb, bands in town)
- * -Allow users to add their favorite gifs...use localStorage or cookies to save this.
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
-var defaultTopics = ["games"];
+var defaultTopics = ["games","movies"];
 var TOPICS = defaultTopics.slice(0);
-var FavoriteTopics = [];
+var FavoriteTopics = (localStorage.getItem("favorites") === null ) ? [] : JSON.parse(localStorage.getItem("favorites"));
 var lastQuery;
 
 /* ===============[ 0. Functions ]=======================*/
@@ -77,7 +75,9 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
+  console.log("---------------------------------------------------");
   console.log(queryURL);
+  console.log("---------------------------------------------------");
   lastQuery = queryURL;
 
   // Search GIPHY API
@@ -90,7 +90,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
 function updatePage(response) {
   var Data = response.data;
-  console.log(response.data);
+  // console.log(response.data);
 
   var resultsDiv = $("#all-giphs-view");
   // resultsDiv.empty(); // Each request should ADD 10 gifs to the page, NOT overwrite the existing gifs.
@@ -137,13 +137,17 @@ function renderButtons() {
     $("#giph-buttons").append(btn);
   }
 
-  console.log("Favorites",FavoriteTopics);
-  console.log("Topics",TOPICS);
+  // Save to LocalStorage
+  localStorage.setItem("favorites",JSON.stringify(FavoriteTopics));
+
+  // console.log("Favorites",FavoriteTopics);
+  // console.log("Topics",TOPICS);
 }
 
 function reset() {
   if($(this).attr("id") === "reset"){
     TOPICS = defaultTopics.slice(0);
+    FavoriteTopics = [];
   }
 
   renderButtons();
@@ -166,9 +170,14 @@ $(function () {
 
     var favorite = parseInt($("#favorite").data('toggled'));
     if(favorite === 1 ){
-      FavoriteTopics.push(topic);
+      if(FavoriteTopics.indexOf(topic) === -1){
+        FavoriteTopics.push(topic);
+      }
+      $("#favorite").click();
     }else{
-      TOPICS.push(topic);
+      if(TOPICS.indexOf(topic) === -1){
+        TOPICS.push(topic);
+      }
     }
     
     renderButtons();
@@ -229,7 +238,6 @@ $(function () {
       $(this).addClass("btn-primary");
     }
 
-    // console.log($(this).data("toggled"));
   });
 
   // Toggle Aninimated Giph

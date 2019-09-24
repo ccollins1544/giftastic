@@ -578,6 +578,18 @@ img {
   margin-right: 15px;
 }
 
+#search-type::-ms-expand {	display: none; }
+#search-type {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  color: var(--accent-text);
+  font-size: 2rem;
+  border: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
 #search-input {
   width: 275px;
   font-size: 1.3em;
