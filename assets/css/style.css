@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.3
+ * Version: 2.3.1
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -91,7 +91,7 @@ article#main-container {
  * header 63px + main-container margin 40px + section margin 50px + footer 83px = 236px
  */
 #main-container.content-wrapper {
-  min-height: calc(100vh - 281px);
+  min-height: calc(100vh - 220px);
 }
 
 section#main-section {
