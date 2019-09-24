@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.0
+ * Version: 2.2
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -12,21 +12,29 @@
 
 1.0 BASIC STYLES
   1.1 Main Elements
+  1.2 Buttons and Forms
+  1.3 Images and Blurbs
 
 2.0 PAGE NAVI
   2.1 Main Nav
   2.2 Hamburger Nav
 
 3.0 MAIN LAYOUT INFO
-  3.1 Game Layout 
+  3.1 AVATAR
+  3.2 Game Layout
 
 4.0 FOOTER
   4.1 Footer Links and Credits
 
 5.0 MOBILE RESPONSIVE
-  5.1 @media only screen and (max-width: 980px)
-  5.2 @media only screen and (max-width: 768px)
-  5.3 @media only screen and (max-width: 640px)
+  5.1 @media only screen and (max-width: 1040px)
+  5.2 @media only screen and (max-width: 991px)
+  5.3 @media only screen and (max-width: 980px)
+  5.4 @media only screen and (max-width: 768px)
+  5.5 @media only screen and (max-width: 700px)
+  5.6 @media only screen and (max-width: 640px)
+  5.7 @media only screen and (max-width: 600px)
+  5.8 @media only screen and (max-width: 450px)
 
 /*------------------------------------------------------*/
 /*--------------[ 0.0 THEME COLORS ]--------------------*/
@@ -44,8 +52,6 @@
   --button-background: #1E2022;
   --cool-red: #E9290F;
   --footer-hover-text: rgba(233, 41, 15, .9);
-  --right-answer-color: lightgreen;
-  --wrong-answer-color: #E9290F;
 }
 
 /*------------------------------------------------------*/
@@ -67,33 +73,31 @@ h5,
 h6 {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
+  color: var(--accent-text);
 }
 
 body.page-template {
   font-family: "Ubuntu";
   color: var(--body-text);
-  -webkit-background-size: contain;
-  -moz-background-size: contain;
-  -o-background-size: contain;
-  background-size: contain;
-  background: url('../images/black_paper_800x800.png');
+  background: url('../images/black_paper_800x800.png')
 }
 
 article#main-container {
-  margin-top: 40px;
+  margin-top: 0px;
 }
 
 /** STICKY FOOTER
-* header 63px + margin 22px + footer 83px = 168px
-*/
+ * header 63px + main-container margin 40px + section margin 50px + footer 83px = 236px
+ */
 #main-container.content-wrapper {
-  min-height: calc(100vh - 186px);
+  min-height: calc(100vh - 236px);
 }
 
 section#main-section {
   border-radius: 5px;
-  padding: 1em 0 0 0 !important;
-  margin-bottom: 0px;
+  padding-bottom: 15px;
+  margin-bottom: 50px;
+  padding: 30px 15px;
   border-color: var(--primary-menu-background);
   box-shadow: 0px 12px 18px -6px var(--primary-menu-background);
 }
@@ -105,7 +109,6 @@ section#main-section {
 .row {
   margin: 0 auto;
   padding: 15px 0px;
-  margin-bottom: 0px;
 }
 
 .first-row {
@@ -113,13 +116,13 @@ section#main-section {
   padding-bottom: 0px;
 }
 
-section.section-block {
+.section-block {
   margin: 0 auto;
-  max-width: 980px;
-  text-align: center;
-  /* color: var(--body-background); */
+  max-width: 1080px;
+}
+
+section.section-block {
   background-color: #fff;
-  /* rgba(0, 0, 0, 0.5); */
 }
 
 li {
@@ -127,9 +130,289 @@ li {
 }
 
 hr {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  border: solid 1px var(--primary-menu-background);
+  border: solid 1px var(--body-text);
+}
+
+/* 1.2 Buttons and Forms
+/*------------------------------------------------------*/
+[type=button]:not(:disabled),
+[type=reset]:not(:disabled),
+[type=submit]:not(:disabled),
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+[type=button],
+[type=reset],
+[type=submit],
+button {
+  -webkit-appearance: button;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+.btn-primary {
+  font-size: 1.3em;
+  margin-right: 10px;
+  color: var(--button-text);
+  border-color: var(--button-background);
+  background-color: var(--button-background);
+}
+
+.btn-primary:hover {
+  color: #fff;
+  border-color: var(--accent-text);
+  background-color: var(--accent-text);
+}
+
+.btn-secondary {
+  font-size: 1.3em;
+  margin-right: 10px;
+  color: var(--button-background);
+  border-color: var(--button-text);
+  background-color: var(--button-text);
+}
+
+.btn-secondary:hover {
+  color: var(--button-text);
+  border-color: var(--button-background);
+  background-color: var(--button-background);
+}
+
+.btn-light {
+  font-size: 1.3em;
+  margin-right: 10px;
+  color: var(--body-text);
+  border-color: var(--button-text);
+  background-color: var(--button-text);
+}
+
+.btn-light:hover {
+  color: var(--button-text);
+  border-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.8);
+  -webkit-animation-name: navbar_brand_animation;
+  /* Safari 4.0 - 8.0 */
+  -webkit-animation-duration: 2s;
+  /* Safari 4.0 - 8.0 */
+  animation-name: navbar_brand_animation;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  -webkit-animation-timing-function: ease-in-out;
+}
+
+.btn-dark {
+  font-size: 1.3em;
+  margin-right: 10px;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--accent-text);
+  background-color: var(--body-text);
+  border-color: var(--primary-menu-background);
+  box-shadow: 3px 3px 5px 0px var(--primary-menu-background);
+}
+
+.btn-dark:hover {
+  color: var(--button-text);
+  border-color: var(--accent-text);
+}
+
+label {
+  display: inline-block;
+  margin-bottom: .5rem;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.form-row {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -5px;
+  margin-left: -5px;
+}
+
+.form-row>.col {
+  -ms-flex-preferred-size: 0;
+  flex-basis: 0;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+  max-width: 100%;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + .75rem + 2px);
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: var(--secondary-menu-text);
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+textarea {
+  overflow: auto;
+  resize: vertical;
+  margin: 0;
+  font-family: inherit;
+}
+
+textarea.form-control {
+  height: auto;
+}
+
+.contact-message {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#contact-form {
+  width: 100%;
+  margin: 0 auto;
+}
+
+#contact-form button.btn-primary {
+  float: right;
+}
+
+/* 1.3 Images and Blurbs
+/*------------------------------------------------------*/
+/* IMAGES */
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+
+.image_wrap {
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+
+.image_wrap img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.image_overlay {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  z-index: 1;
+}
+
+.image_overlay::before {
+  font-family: "Font Awesome 5 Free";
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  margin: -16px 0 0 -16px;
+  font-size: 32px;
+  font-weight: 900;
+  content: "\f35d";
+  -webkit-transition: all .4s;
+  -moz-transition: all .4s;
+  transition: all .4s;
+}
+
+/* IMAGE Zoom on Hover */
+/* [1] The Container */
+.img-hover-zoom,
+.blurb_content {
+  /* Hide the overflowing of child elements  */
+  overflow: hidden;
+}
+
+/* [2] Transition property for smooth transformation of images */
+.img-hover-zoom img,
+.img-hover-zoom .image_overlay {
+  transition: transform .5s ease;
+}
+
+/* [3] Finally, transforming the image when container gets hovered */
+.img-hover-zoom:hover img,
+.img-hover-zoom:hover .image_overlay {
+  transform: scale(1.1);
+}
+
+/* BLURB */
+.module_header {
+  color: #fff;
+  font-family: "Montserrat";
+  font-size: 1.5rem;
+  font-weight: normal;
+  padding: 15px;
+  background-color: var(--accent-text);
+}
+
+.module_header:focus,
+.module_header:hover,
+.blurb_content a:hover {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.blurb_content a {
+  color: #fff;
+}
+
+.blurb_content {
+  position: relative;
+  margin: 0 auto;
+  max-width: 550px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.blurb_content .image_wrap img {
+  min-height: 225px;
+}
+
+.blurb_content:hover .image_overlay {
+  z-index: 3;
+  opacity: 1;
+}
+
+.blurb_content .module_header {
+  position: absolute;
+  width: 100%;
+  bottom: 5px;
 }
 
 /*------------------------------------------------------*/
@@ -143,7 +426,7 @@ hr {
 
 #main-nav,
 #mobile-nav {
-  max-width: 980px;
+  max-width: 1080px;
   margin: 0 auto;
   background-color: var(--body-text) !important;
 }
@@ -152,11 +435,6 @@ hr {
 #mobile-nav .navbar-nav .nav-link {
   font-size: 1.3em;
   color: rgba(255, 255, 255, .5);
-}
-
-#main-nav .nav-item:nth-child(2) {
-  border-left: solid 1px rgba(255, 255, 255, .5);
-  border-right: solid 1px rgba(255, 255, 255, .5);
 }
 
 /* Active Nav Link */
@@ -173,8 +451,8 @@ hr {
 
 /* Focused or Hover Nav Link */
 #main-nav .navbar-nav .nav-link:focus,
-#mobile-nav .navbar-nav .nav-link:focus,
 #main-nav .navbar-nav .nav-link:hover,
+#mobile-nav .navbar-nav .nav-link:focus,
 #mobile-nav .navbar-nav .nav-link:hover {
   color: rgba(255, 255, 255, 1);
 }
@@ -261,15 +539,55 @@ hr {
 /*------------------------------------------------------*/
 /*--------------[ 3.0 MAIN LAYOUT INFO ]----------------*/
 /*------------------------------------------------------*/
-/* 3.1 Game Layout
+/* 3.1 AVATAR
 /*------------------------------------------------------*/
-button,
-div,
-form,
-input {
-  margin: 10px;
+.avatar_image {
+  float: left;
+  margin: 0 20px 0 0;
 }
 
+.avatar_image .image_wrap {
+  display: block;
+  width: 200px;
+}
+
+.avatar_image .image_wrap img {
+  max-width: 100%;
+  height: auto;
+  border-color: var(--primary-menu-background);
+  background-color: var(--body-text);
+  box-shadow: 0px 12px 18px -6px var(--primary-menu-background);
+}
+
+/* 3.2 Game Layout
+/*------------------------------------------------------*/
+#button-section {
+  padding: 0;
+}
+
+#search-input {
+  margin-right: 10px;
+  font-size: 1.3em;
+}
+
+#main-nav, #mobile-nav {
+  padding: 0px;
+}
+
+#gif-search-form {
+  color: #fff;
+  align-items: baseline;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+#gif-search-form h4 {
+  margin-top: 10px;
+}
+
+#gif-search-form .form-check {
+  margin: 0 10px;
+}
 /*------------------------------------------------------*/
 /*--------------[ 4.0 FOOTER ]--------------------------*/
 /*------------------------------------------------------*/
@@ -277,12 +595,9 @@ input {
 /*------------------------------------------------------*/
 #main-footer {
   position: relative;
-  /* position: absolute; */
-  width: 100%;
   display: flex;
   flex-flow: column;
   height: 83px;
-  /* bottom: 0px; */
 }
 
 /* Footer Links */
@@ -492,15 +807,56 @@ input {
   display: none;
 }
 
-/* 5.1 @media only screen and (max-width: 980px)
+/* 5.1 @media only screen and (max-width: 1040px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 1040px) {
+  section#main-section {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+
+
+/* 5.2 @media only screen and (max-width: 991px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 991px) {
+  #main-nav.navbar-expand-lg .navbar-collapse {
+    display: flex !important;
+    display: -ms-flexbox !important;
+    -ms-flex-preferred-size: auto;
+    flex-basis: auto;
+    -ms-flex-preferred-size: 100%;
+    flex-basis: 100%;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  #main-nav.navbar-expand-lg .navbar-nav {
+    flex-direction: row;
+  }
+
+  /* Nav Links */
+  #main-nav.navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: .5rem;
+    padding-left: .5rem;
+  }
+}
+
+/* 5.3 @media only screen and (max-width: 980px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 980px) {
+  .avatar_image {
+    margin-bottom: 20px;
+  }
+
   .page-template:not(#contact-page) .row {
     padding: 15px 0 0 0;
   }
 }
 
-/* 5.2 @media only screen and (max-width: 768px)
+/* 5.4 @media only screen and (max-width: 768px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 768px) {
   #footer-nav .navbar-collapse {
@@ -508,14 +864,94 @@ input {
   }
 }
 
-/* 5.3 @media only screen and (max-width: 640px)
+/* 5.5 @media only screen and (max-width: 700px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 700px) {
+  #main-header .container-fluid {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  #main-nav {
+    display: none;
+  }
+
+  #mobile-nav {
+    display: flex;
+  }
+
+  .navbar-brand {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: .8rem 1rem;
+    order: 1;
+  }
+
+  section#main-section {
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+
+  /** STICKY FOOTER
+   * header 56px + main-container margin 40px + section margin 50px + footer 83px = 229px
+   */
+  #main-container.content-wrapper {
+    min-height: calc(100vh - 229px);
+  }
+}
+
+
+/* 5.6 @media only screen and (max-width: 640px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 640px) {
   #page-title {
     margin: 0 auto;
   }
 
+  .contact-message {
+    text-align: center;
+  }
+
+  .avatar_image {
+    float: none;
+    margin: 0 0 20px 0;
+  }
+
+  .avatar_image .image_wrap {
+    width: 75%;
+  }
+
   .row>.container-fluid {
     padding: 0px;
+  }
+}
+
+
+/* 5.7 @media only screen and (max-width: 600px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 600px) {
+  #page-title {
+    margin: 0 auto;
+  }
+}
+
+/* 5.8 @media only screen and (max-width: 450px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 450px) {
+  #footer-nav {
+    bottom: 58px;
+  }
+
+  /** STICKY FOOTER
+   * header 56px + main-container margin 40px + section margin 50px + footer 108px = 254px
+   */
+  #main-container.content-wrapper {
+    min-height: calc(100vh - 254px);
   }
 }
