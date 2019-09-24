@@ -578,7 +578,10 @@ img {
   margin-right: 15px;
 }
 
-#search-type::-ms-expand {	display: none; }
+#search-type::-ms-expand {
+  display: none;
+}
+
 #search-type {
   font-family: 'Montserrat', sans-serif;
   font-weight: 900;
@@ -588,6 +591,11 @@ img {
   appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
+}
+
+#search-type:hover {
+  border-color: var(--primary-menu-background);
+  box-shadow: 0px 5px 6px 2px var(--primary-menu-background);
 }
 
 #search-input {
@@ -608,7 +616,8 @@ img {
   margin-bottom: 8px;
 }
 
-#gif-search-form h4 {
+#gif-search-form h4,
+#movie-search-form {
   margin-top: 10px;
 }
 
@@ -621,9 +630,10 @@ img {
   visibility: hidden;
 }
 
-#gif-search-form .form-control[type=number] {
+#gif-search-form .form-control[type=number],
+#movie-search-form .form-control[type=number] {
   height: 2em;
-  width: 75px;
+  width: 100px;
   margin-left: 10px;
   margin-right: 15px;
   font-family: 'Montserrat', sans-serif;
@@ -635,6 +645,16 @@ img {
 #gif-search-form .form-check-label {
   font-family: 'Montserrat', sans-serif;
   cursor: pointer;
+}
+
+#movieType {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--secondary-menu-text);
+  border-color: var(--secondary-menu-background);
+  background-color: var(--secondary-menu-background);
+  height: 36px;
+  margin-right: 15px;
+
 }
 
 /* 3.3 Results Cards

@@ -12,7 +12,6 @@
  * 
  * @todo
  * -make fully mobile responsive
- * -Integrate with additional apis (omdb, bands in town)
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
 var defaultTopics = ["games","movies"];
@@ -39,11 +38,12 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // -------------[ Build Query URL ]----------------
   var queryURL = "https://api.giphy.com/v1/gifs/search?";
-  if (searchTerm === undefined || searchTerm="") { // Just get the most trending GIPHY or run the last query again.
+  if (searchTerm === undefined || searchTerm === "") { // Just get the most trending GIPHY or run the last query again.
     queryURL = "https://api.giphy.com/v1/gifs/trending?";
 
     // Run the last query again
     if(lastQuery !== undefined){
+      if(lastQuery.split("/").indexOf("api.giphy.com") === -1 ){ return; }
       queryURL = lastQuery;
 
       // Search GIPHY API
@@ -85,37 +85,110 @@ function searchGiphy(searchTerm, limit, offset, rating) {
     url: queryURL,
     method: "GET",
   }).then(updatePage);
+  return;
+}
+
+function movieSearch(movie, _type, _year, _pageNumber){
+  var APIKEY = "9533d959";
+
+  // -------------[ Build Query URL ]----------------
+  var queryURL = "https://www.omdbapi.com/?"
+  var queryParams = {};
+  queryParams.apikey = APIKEY;
+
+  if(movie !== undefined && movie !== ""){
+    queryParams.s = movie.trim();
+  }else if (lastQuery !== undefined ){
+    if(lastQuery.split("/").indexOf("www.omdbapi.com") === -1 ){ return; }
+    queryURL = lastQuery;
+
+    $.ajax({
+      url: queryURL,
+      method: "GET",
+    }).then(updatePage);
+
+    return;
+  }else { return; }
+
+  if(_type !== undefined && _type !== ""){
+    queryParams.type = _type.trim();
+  }
+
+  if(_year !== undefined && _year !== ""){
+    queryParams.y = parseInt(_year.trim());
+  }
+
+  if(_pageNumber !== undefined && _pageNumber !== ""){
+    queryParams.page = parseInt(_pageNumber.trim());
+  }
+
+  // Combine queryURL with queryParams
+  queryURL = queryURL + $.param(queryParams);
+  console.log("-------------------------------------------------");
+  console.log(queryURL);
+  console.log("-------------------------------------------------");
+  lastQuery = queryURL;
+
+  $.ajax({
+    url: queryURL,
+    method: "GET",
+  }).then(updatePage);
+  return;
 }
 
 function updatePage(response) {
-  var Data = response.data;
-  // console.log(response.data);
-
   var resultsDiv = $("#all-giphs-view");
   var queryParams = deparam(lastQuery);
+  
+  if(lastQuery.split("/").indexOf("api.giphy.com") !== -1) {
+    // Update Page for GIPHY
+    var Data = response.data;
+    
+    for (var i = Data.length - 1; i >= 0; i--) {
+      var still_image = Data[i].images.original_still.url;
+      var animated_image = Data[i].images.original.url;
+      var slug = Data[i].slug;
+      var title = Data[i].title;
+      title = $("<h5>").addClass("card-title").text(title);
+      subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(queryParams.q);
+      
+      var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
+      var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
 
-  for (var i = 0; i < Data.length; i++) {
-    var still_image = Data[i].images.original_still.url;
-    var animated_image = Data[i].images.original.url;
-    var slug = Data[i].slug;
-    var title = Data[i].title;
-    title = $("<h5>").addClass("card-title").text(title);
-    subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(queryParams.q);
+      var GIPH = $("<img>").addClass("card-img-top giph").attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
+      GIPH = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(GIPH, card_body);
+      resultsDiv.prepend(GIPH);
+    }
+    
+  }else if(lastQuery.split("/").indexOf("www.omdbapi.com") !== -1) {
+    // Update Page for Movies
+    var Data = response.Search;
+    
+    for (var i = Data.length - 1; i >= 0; i--){
+      var poster = (Data[i].Poster !== "N/A") ? Data[i].Poster : "https://placehold.it/250";
+      var title = Data[i].Title;
+      var subtitle = queryParams.s + " - " + Data[i].Type;
+      var year = Data[i].Year;
+      
+      title = $("<h5>").addClass("card-title").text(title)
+      subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(subtitle);
+      year = $("<p>").addClass("card-text font-weight-bold").text("Year: " + year);
+      var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, year);
 
-    var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
-    var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
+      var MOVIE = $("<img>").addClass("card-img-top movie").attr("data-id", Data[i].imdbID).attr("src",poster).attr("alt", Data[i].Title);
+      MOVIE = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").append(MOVIE, card_body);
+      resultsDiv.prepend(MOVIE);
+    }
 
-    var GIPH = $("<img>").addClass("card-img-top giph").attr("data-still", still_image).attr("data-animated", animated_image).attr("data-state", "still").attr("src", still_image).attr("alt", slug);
-    GIPH = $("<div>").addClass("card col-lg-3 col-md-6 col-sm-12").html(GIPH);
-    GIPH.append(card_body);
-    resultsDiv.prepend(GIPH);
   }
+
+  return;
 }
 
 function renderButtons() {
   $("#favorite-giph-buttons").empty();
   $("#giph-buttons").empty();
-
+  
   if(FavoriteTopics.length > 0 ){
     $("#favorite-giph-buttons").show();
     var favTitle = $("<i>").addClass("far fa-star");
@@ -136,12 +209,11 @@ function renderButtons() {
 
   // Save to LocalStorage
   localStorage.setItem("favorites",JSON.stringify(FavoriteTopics));
-
-  // console.log("Favorites",FavoriteTopics);
-  // console.log("Topics",TOPICS);
+  return;
 }
 
-function reset() {
+function reset(e) {
+  e.preventDefault();
   if($(this).attr("id") === "reset"){
     TOPICS = defaultTopics.slice(0);
     FavoriteTopics = [];
@@ -149,6 +221,7 @@ function reset() {
 
   renderButtons();
   $("#all-giphs-view").empty();
+  return;
 }
 
 /**===============[ 3. Document Ready ]==================== 
@@ -184,24 +257,53 @@ $(function () {
   $('#clear').on('click', reset);
 
   // Search Giphs
-  $('#button-section').on('click', '.giph.btn', function () {
+  $('#button-section').on('click', '.giph.btn', function (e) {
+    e.preventDefault();
+
+    var searchType = $("#search-type").children("option:selected").val();
     var searchTerm = $(this).text();
     searchTerm = (searchTerm !== undefined) ? searchTerm.trim() : "";
 
+    // GIPHY PARAMETERS
     var rating = $("#gif-search-form input[name='ratingOption']:checked").val();
     rating = (rating !== undefined) ? rating.trim() : "";
-
+    
     var limit = $("#gif-search-form #limit").val();
     limit = (limit !== undefined) ? limit.trim() : "";
-
+    
     var offset = $("#gif-search-form #offset").val();
     offset = (offset !== undefined) ? offset.trim() : "";
     
-    searchGiphy(searchTerm, limit, offset, rating);
+    // MOVIE PARAMETERS
+    var movieType = $("#movieType").children("option:selected").val();
+    movieType = (movieType !== undefined) ? movieType.trim() : "";
+    
+    var movieYear = $("movieYear").val();
+    movieYear = (movieYear !== undefined) ? movieYear.trim() : "";
+
+    var pageNumber = $("moviePage").val();
+    pageNumber = (pageNumber !== undefined) ? pageNumber.trim() : "";
+
+    switch (searchType) {
+      case "giph":
+        searchGiphy(searchTerm, limit, offset, rating);
+        break;
+    
+      case "movie":
+        movieSearch(searchTerm, movieType, movieYear, pageNumber);
+        
+        break;
+    
+      default:
+        searchGiphy(searchTerm, limit, offset, rating);
+        break;
+    }
+
   });
 
   // Toggle Rating CSS
-  $("#gif-search-form .form-check-input[type=radio]").click(function(){
+  $("#gif-search-form .form-check-input[type=radio]").click(function(e){
+    e.preventDefault();
     var Toggled = parseInt($(this).data('toggled'));
     
     if(Toggled === 0){
@@ -216,7 +318,9 @@ $(function () {
   });
 
   // Toggle Favorite 
-  $("#favorite").click(function(){
+  $("#favorite").click(function(e){
+    e.preventDefault();
+
     var Toggled = parseInt($(this).data('toggled'));
     var unfavorite = $("<i>").addClass("far fa-star");
     var favorite = $("<i>").addClass("fas fa-star");
@@ -249,5 +353,27 @@ $(function () {
       $(this).attr("data-state", "still");
     }
   });
+
+  // Search Type on Change Show Different Parameters
+  $("#search-type").change(function(){
+    var searchType = $(this).children("option:selected").val();
+    
+    switch (searchType) {
+      case "giph":
+        $("#movie-search-form").slideUp();
+        $("#gif-search-form").slideDown("slow");
+        break;
+
+      case "movie":
+        $("#gif-search-form").slideUp();
+        $("#movie-search-form").slideDown("slow");
+        break;
+    
+      default:
+        $("#movie-search-form").slideUp();
+        $("#gif-search-form").slideDown("slow");
+        break;
+    }
+  }).change(); // Trigger initial change on page load.
 
 });
