@@ -38,7 +38,12 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // -------------[ Build Query URL ]----------------
   var queryURL = "https://api.giphy.com/v1/gifs/search?";
-  if (searchTerm === undefined || searchTerm === "") { // Just get the most trending GIPHY or run the last query again.
+  var queryParams = {};
+  queryParams.api_key = APIKEY;
+  
+  if(searchTerm !== undefined && searchTerm !== ""){
+    queryParams.q = String(searchTerm.trim());
+  } else if (searchTerm === undefined || searchTerm === "") { // Just get the most trending GIPHY or run the last query again.
     queryURL = "https://api.giphy.com/v1/gifs/trending?";
 
     // Run the last query again
@@ -54,12 +59,6 @@ function searchGiphy(searchTerm, limit, offset, rating) {
       return;
     }
   }
-
-  // Create QueryParams
-  var queryParams = {
-    "api_key": APIKEY
-  };
-  queryParams.q = String(searchTerm.trim());
 
   if (limit !== undefined && limit !== "") {
     queryParams.limit = parseInt(limit.trim());
@@ -139,10 +138,16 @@ function movieSearch(movie, _type, _year, _pageNumber){
 function updatePage(response) {
   var resultsDiv = $("#all-giphs-view");
   var queryParams = deparam(lastQuery);
-  
+
   if(lastQuery.split("/").indexOf("api.giphy.com") !== -1) {
     // Update Page for GIPHY
     var Data = response.data;
+
+    // Detect False Response
+    if(Data.length === 0 ){
+      alert("Giph not found!");
+      return;
+    }
     
     for (var i = Data.length - 1; i >= 0; i--) {
       var still_image = Data[i].images.original_still.url;
@@ -162,6 +167,12 @@ function updatePage(response) {
     
   }else if(lastQuery.split("/").indexOf("www.omdbapi.com") !== -1) {
     // Update Page for Movies
+    // Detect False Response
+    if(response.Response === "False"){
+      alert(response.Error);
+      return;
+    }
+
     var Data = response.Search;
     
     for (var i = Data.length - 1; i >= 0; i--){
