@@ -39,7 +39,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // -------------[ Build Query URL ]----------------
   var queryURL = "https://api.giphy.com/v1/gifs/search?";
-  if (searchTerm === undefined) { // Just get the most trending GIPHY or run the last query again.
+  if (searchTerm === undefined || searchTerm="") { // Just get the most trending GIPHY or run the last query again.
     queryURL = "https://api.giphy.com/v1/gifs/trending?";
 
     // Run the last query again
@@ -85,7 +85,6 @@ function searchGiphy(searchTerm, limit, offset, rating) {
     url: queryURL,
     method: "GET",
   }).then(updatePage);
-
 }
 
 function updatePage(response) {
@@ -93,9 +92,7 @@ function updatePage(response) {
   // console.log(response.data);
 
   var resultsDiv = $("#all-giphs-view");
-  // resultsDiv.empty(); // Each request should ADD 10 gifs to the page, NOT overwrite the existing gifs.
-  
-  var category = deparam(lastQuery);
+  var queryParams = deparam(lastQuery);
 
   for (var i = 0; i < Data.length; i++) {
     var still_image = Data[i].images.original_still.url;
@@ -103,7 +100,7 @@ function updatePage(response) {
     var slug = Data[i].slug;
     var title = Data[i].title;
     title = $("<h5>").addClass("card-title").text(title);
-    subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(category.q);
+    subtitle = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(queryParams.q);
 
     var rating = $("<p>").addClass("card-text font-weight-bold").text("Rating: " + Data[i].rating.toUpperCase());
     var card_body = $("<div>").addClass("card-body text-center").append(title, subtitle, rating);
