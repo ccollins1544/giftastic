@@ -16,6 +16,7 @@
  *   1.6 renderButtons()
  *   1.7 reset()
  *   1.8 deparam
+ *   1.9 formatDate
  * 
  * 2. Document Ready
  *   2.1 Render Buttons on ready
@@ -344,7 +345,7 @@ function updatePage(response) {
           var eventsRow = $("<tr>");
 
           // COLUMN 1
-          var eventDate = $("<strong>").text(response[i].datetime);
+          var eventDate = $("<strong>").text(formatDate(response[i].datetime,"long",false));
           var venueName = $("<p>").text(response[i].venue.name);
           eventDate = $("<td>").append(eventDate, venueName);
 
@@ -463,6 +464,37 @@ deparam = function (querystring) {
 
   return params;
 }; // END deparam
+
+/**
+ * 1.9 formatDate
+ * @param {string} datetime
+ * @param {string} format - long or short
+ * @return {string} formatedDate
+ */
+formatDate = function(unformatedDate, format="long", time=true){
+  const monthNamesLong = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+  const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+
+  var unformatedDate = new Date(unformatedDate);
+  var day = unformatedDate.getDate();
+  var month = (format === "long") ? monthNamesLong[unformatedDate.getMonth()] : monthNamesShort[unformatedDate.getMonth()];
+  var year = unformatedDate.getFullYear();
+
+  var hours = unformatedDate.getHours();
+  var ampm = "AM";
+  if( hours > 12 ){ hours -= 12; ampm = "PM"; }
+  
+  var minutes = unformatedDate.getMinutes();
+  if(minutes < 10 ){ minutes = "0" + minutes; }
+  
+  var formatedDate = (format === "long") ? month + " " + day + ", " + year : month + "/" + day + "/" + year;
+
+  if(time){
+    formatedDate += " [" + hours + ":" + minutes + " " + ampm + "]";
+  }
+
+  return formatedDate;
+};
 
 /**===============[ 2. Document Ready ]==================== 
  * NOTE: $(function(){ === $(document).ready(function() {
