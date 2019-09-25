@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.3.1
+ * Version: 2.4
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -28,15 +28,21 @@
   4.1 Footer Links and Credits
 
 5.0 MOBILE RESPONSIVE
-  5.1 @media only screen and (max-width: 1040px)
-  5.2 @media only screen and (max-width: 991px)
-  5.3 @media only screen and (max-width: 980px)
-  5.4 @media only screen and (max-width: 768px)
-  5.5 @media only screen and (max-width: 700px)
-  5.6 @media only screen and (max-width: 640px)
-  5.7 @media only screen and (max-width: 600px)
-  5.8 @media only screen and (max-width: 450px)
-
+  5.1 @media only screen and (max-width: 1100px)
+  5.2 @media only screen and (max-width: 1040px)
+  5.3 @media only screen and (max-width: 991px)
+  5.4 @media only screen and (max-width: 980px)
+  5.5 @media only screen and (max-width: 860px)
+  5.6 @media only screen and (max-width: 768px)
+  5.7 @media only screen and (max-width: 700px)
+  5.8 @media only screen and (max-width: 680px)
+  5.9 @media only screen and (max-width: 640px)
+  5.10 @media only screen and (max-width: 600px)
+  5.11 @media only screen and (max-width: 585px)
+  5.12 @media only screen and (max-width: 515px)
+  5.13 @media only screen and (max-width: 450px)
+  5.14 @media only screen and (max-width: 430px)
+  
 /*------------------------------------------------------*/
 /*--------------[ 0.0 THEME COLORS ]--------------------*/
 /*------------------------------------------------------*/
@@ -563,11 +569,7 @@ img {
 /* 3.2 Game Search Elements
 /*------------------------------------------------------*/
 #button-section {
-  padding: 15px 0 0 0;
-}
-
-#button-section .row {
-  padding-top: 0px;
+  padding: 0;
 }
 
 #favorite-gif-buttons {
@@ -575,6 +577,7 @@ img {
 }
 
 #favorite-gif-buttons h4 {
+  margin-top: 10px;
   margin-right: 15px;
 }
 
@@ -882,17 +885,57 @@ img {
   display: none;
 }
 
-/* 5.1 @media only screen and (max-width: 1040px)
+/* 5.1 @media only screen and (max-width: 1100px)
 /*------------------------------------------------------*/
-@media only screen and (max-width: 1040px) {
-  section#main-section {
-    margin-left: 30px;
-    margin-right: 30px;
+@media only screen and (max-width: 1100px) {
+  #button-section {
+    padding: 0 15px;
+  }
+
+  #add-button-form .form-group:nth-child(2) {
+    width: calc(25% + 5px);
+  }
+
+  #search-input {
+    width: 100%;
+  }
+
+  #search-type {
+    font-size: 1.8em;
   }
 }
 
 
-/* 5.2 @media only screen and (max-width: 991px)
+/* 5.2 @media only screen and (max-width: 1040px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 1040px) {
+  #button-section {
+    padding: 0 30px;
+  }
+
+  section#main-section {
+    padding-top: 10px;
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+
+  #add-button-form {
+    margin-bottom: 0px;
+  }
+
+  #add-button-form .form-group:first-child {
+    width: 100%;
+    margin-bottom: 5px;
+    justify-content: center;
+  }
+
+  #add-button-form .form-group:nth-child(2) {
+    width: calc(100% - 460px);
+  }
+}
+
+
+/* 5.3 @media only screen and (max-width: 991px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 991px) {
   #main-nav.navbar-expand-lg .navbar-collapse {
@@ -919,27 +962,59 @@ img {
   }
 }
 
-/* 5.3 @media only screen and (max-width: 980px)
+/* 5.4 @media only screen and (max-width: 980px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 980px) {
   .avatar_image {
     margin-bottom: 20px;
   }
+}
 
-  .page-template:not(#contact-page) .row {
-    padding: 15px 0 0 0;
+/* 5.5 @media only screen and (max-width: 860px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 860px) {
+  #main-header>.container-fluid {
+    padding: 0px;
+  }
+
+  .navbar-brand {
+    width: 100%;
+    text-align: center;
+  }
+
+  #main-nav.navbar-expand-lg .navbar-collapse {
+    margin-top: 60px;
+    justify-content: center;
+  }
+
+  #gif-search-form,
+  #movie-search-form {
+    margin-left: 0px !important;
   }
 }
 
-/* 5.4 @media only screen and (max-width: 768px)
+/* 5.6 @media only screen and (max-width: 768px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 768px) {
   #footer-nav .navbar-collapse {
     justify-content: center;
   }
+
+  #add-button-form .form-group:nth-child(2) {
+    width: 100%;
+    padding-bottom: 5px;
+  }
+
+  #add-button-form button.btn {
+    margin-left: auto;
+  }
+
+  #all-gifs-view {
+    padding-top: 5px;
+  }
 }
 
-/* 5.5 @media only screen and (max-width: 700px)
+/* 5.7 @media only screen and (max-width: 700px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 700px) {
   #main-header .container-fluid {
@@ -947,13 +1022,13 @@ img {
     padding-right: 0px;
   }
 
-  #main-nav {
+  /* #main-nav {
     display: none;
   }
 
   #mobile-nav {
     display: flex;
-  }
+  } */
 
   .navbar-brand {
     display: -ms-flexbox;
@@ -963,7 +1038,7 @@ img {
     -ms-flex-align: center;
     align-items: center;
     -ms-flex-pack: justify;
-    justify-content: space-between;
+    justify-content: center;
     padding: .8rem 1rem;
     order: 1;
   }
@@ -982,7 +1057,25 @@ img {
 }
 
 
-/* 5.6 @media only screen and (max-width: 640px)
+/* 5.8 @media only screen and (max-width: 680px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 680px) {
+  #gif-search-form {
+    display: flex;
+    justify-content: center;
+  }
+
+  #gif-search-form h4:first-child {
+    margin-left: 15%;
+  }
+
+  #gif-search-form .form-group:nth-of-type(2) {
+    margin-right: 15%;
+  }
+
+}
+
+/* 5.9 @media only screen and (max-width: 640px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 640px) {
   #page-title {
@@ -1008,7 +1101,7 @@ img {
 }
 
 
-/* 5.7 @media only screen and (max-width: 600px)
+/* 5.10 @media only screen and (max-width: 600px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 600px) {
   #page-title {
@@ -1016,7 +1109,36 @@ img {
   }
 }
 
-/* 5.8 @media only screen and (max-width: 450px)
+/* 5.11 @media only screen and (max-width: 585px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 585px) {
+  #gif-search-form h4:first-child {
+    margin-left: 10%;
+  }
+
+  #gif-search-form .form-group:nth-of-type(2) {
+    margin-right: 10%;
+  }
+
+  #gif-search-form.form-inline .form-check {
+    width: auto !important;
+  }
+}
+
+/* 5.12 @media only screen and (max-width: 515px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 515px) {
+  #gif-search-form h4:first-child {
+    margin-left: 15px;
+  }
+
+  #gif-search-form .form-group:nth-of-type(2) {
+    margin-right: 15px;
+  }
+}
+
+
+/* 5.13 @media only screen and (max-width: 450px)
 /*------------------------------------------------------*/
 @media only screen and (max-width: 450px) {
   #footer-nav {
@@ -1024,9 +1146,51 @@ img {
   }
 
   /** STICKY FOOTER
-   * header 56px + main-container margin 40px + section margin 50px + footer 108px = 254px
-   */
+  * header 56px + main-container margin 40px + section margin 50px + footer 108px = 254px
+  */
   #main-container.content-wrapper {
     min-height: calc(100vh - 254px);
+  }
+}
+
+/* 5.14 @media only screen and (max-width: 430px)
+/*------------------------------------------------------*/
+@media only screen and (max-width: 430px) {
+  #gif-search-form {
+    margin-top: 0px;
+  }
+
+  #movie-search-form {
+    margin-bottom: 0px;
+  }
+
+  #gif-search-form h4 {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  #gif-search-form h4:first-child {
+    margin-left: 0px;
+  }
+
+  #gif-search-form .form-group:nth-of-type(2) {
+    margin-right: 0px;
+  }
+
+  #gif-search-form .form-group {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+
+  #gif-search-form .form-control[type=number] {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    margin-left: 15px;
+    margin-right: 15px;
   }
 }

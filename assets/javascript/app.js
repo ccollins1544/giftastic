@@ -2,7 +2,7 @@
  * GifTastic JS
  * @package GifTastic
  * @author Christopher Collins
- * @version 2.3
+ * @version 2.4
  * @license none (public domain)
  * 
  * ===============[ TABLE OF CONTENTS ]===================
@@ -28,8 +28,6 @@
  *     2.2.7 Get movie plot on click
  *     2.2.8 Search Type on Change Show Different Parameters
  * 
- * @todo
- * -make fully mobile responsive
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
 var defaultTopics = ["games", "movies"];
@@ -88,9 +86,9 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  console.log("---------------------------------------------------");
-  console.log(queryURL);
-  console.log("---------------------------------------------------");
+  // console.log("---------------------------------------------------");
+  // console.log(queryURL);
+  // console.log("---------------------------------------------------");
   lastQuery = queryURL;
 
   // Search GIPHY API
@@ -148,9 +146,9 @@ function movieSearch(movie, _type, _year, _pageNumber) {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  console.log("-------------------------------------------------");
-  console.log(queryURL);
-  console.log("-------------------------------------------------");
+  // console.log("-------------------------------------------------");
+  // console.log(queryURL);
+  // console.log("-------------------------------------------------");
   lastQuery = queryURL;
 
   $.ajax({
@@ -191,9 +189,9 @@ function moviePlot(id, movie, plot = "short") {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  console.log("-------------------------------------------------");
-  console.log(queryURL);
-  console.log("-------------------------------------------------");
+  // console.log("-------------------------------------------------");
+  // console.log(queryURL);
+  // console.log("-------------------------------------------------");
   lastQuery = queryURL;
 
 
@@ -219,6 +217,7 @@ function moviePlot(id, movie, plot = "short") {
 
 /**
  * 1.4 updatePage
+ * This can accept JSON response form api.giphy.com or www.omdbapi.com.
  * @param {JSON} response
  */
 function updatePage(response) {
@@ -292,6 +291,8 @@ function updatePage(response) {
 
 /**
  * 1.5 renderButtons
+ * Renders buttons from both FavoriteTopics array and TOPICS array. 
+ * FavoriteTopics array is saved to localStorage to persist the data. 
  */
 function renderButtons() {
   $("#favorite-gif-buttons").empty();
@@ -322,6 +323,8 @@ function renderButtons() {
 
 /**
  * reset()
+ * If trigger from #reset id then both TOPICS and FavoriteTopics arrays will be reset. 
+ * Otherwise only the gif cards will be removed from the page. 
  */
 function reset() {
   if ($(this).attr("id") === "reset") {
@@ -337,6 +340,7 @@ function reset() {
 
 /**
  * deparam
+ * returns the reverse of $.param
  */
 deparam = function (querystring) {
   // remove any preceding url and split
