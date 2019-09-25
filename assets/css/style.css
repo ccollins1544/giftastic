@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.4
+ * Version: 2.4.1
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -185,8 +185,9 @@ select {
 
 .btn-secondary:hover {
   color: var(--button-text);
-  border-color: var(--button-background);
+  border-color: var(--accent-text);
   background-color: var(--button-background);
+  box-shadow: 3px 3px 5px 0px var(--accent-text);
 }
 
 .btn-light {
@@ -664,6 +665,11 @@ img {
 /*------------------------------------------------------*/
 .card {
   padding: 0px;
+}
+
+.table-dark {
+  color: var(--button-text);
+  background-color: var(--button-background);
 }
 
 /*------------------------------------------------------*/

@@ -2,7 +2,7 @@
  * GifTastic JS
  * @package GifTastic
  * @author Christopher Collins
- * @version 2.4
+ * @version 2.4.1
  * @license none (public domain)
  * 
  * ===============[ TABLE OF CONTENTS ]===================
@@ -11,10 +11,11 @@
  *   1.1 searchGiphy()
  *   1.2 movieSearch()
  *   1.3 moviePlot()
- *   1.4 updatePage()
- *   1.5 renderButtons()
- *   1.6 reset()
- *   1.7 deparam
+ *   1.4 bandsInTown()
+ *   1.5 updatePage()
+ *   1.6 renderButtons()
+ *   1.7 reset()
+ *   1.8 deparam
  * 
  * 2. Document Ready
  *   2.1 Render Buttons on ready
@@ -26,11 +27,12 @@
  *     2.2.5 Toggle Favorite Topic
  *     2.2.6 Toggle Animated gif
  *     2.2.7 Get movie plot on click
- *     2.2.8 Search Type on Change Show Different Parameters
+ *     2.2.8 Get artist upcoming events on click
+ *     2.2.9 Search Type on Change Show Different Parameters
  * 
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
-var defaultTopics = ["games", "movies","music","pokemon","cartoons","batman","sports","football"];
+var defaultTopics = ["games", "movies", "music", "pokemon", "cartoons", "batman", "sports", "football"];
 var TOPICS = defaultTopics.slice(0);
 var FavoriteTopics = (localStorage.getItem("favorites") === null) ? [] : JSON.parse(localStorage.getItem("favorites"));
 var lastQuery;
@@ -57,10 +59,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
     queryURL = "https://api.giphy.com/v1/gifs/trending?";
 
     // Run the last query again
-    if (lastQuery !== undefined) {
-      if (lastQuery.split("/").indexOf("api.giphy.com") === -1) {
-        return;
-      }
+    if (lastQuery !== undefined && lastQuery.split("/").indexOf("api.giphy.com") !== -1) {
       queryURL = lastQuery;
 
       // Search GIPHY API
@@ -86,7 +85,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  // console.log("---------------------------------------------------");
+  // console.log("-----------[ Search Giphy ]------------------------");
   // console.log(queryURL);
   // console.log("---------------------------------------------------");
   lastQuery = queryURL;
@@ -97,7 +96,7 @@ function searchGiphy(searchTerm, limit, offset, rating) {
     method: "GET",
   }).then(updatePage);
   return;
-}
+} // END searchGiphy
 
 /**
  * 1.2 movieSearch
@@ -116,10 +115,7 @@ function movieSearch(movie, _type, _year, _pageNumber) {
 
   if (movie !== undefined && movie !== "") {
     queryParams.s = movie.trim();
-  } else if (lastQuery !== undefined) {
-    if (lastQuery.split("/").indexOf("www.omdbapi.com") === -1) {
-      return;
-    }
+  } else if (lastQuery !== undefined && lastQuery.split("/").indexOf("www.omdbapi.com") !== -1) {
     queryURL = lastQuery;
 
     $.ajax({
@@ -128,9 +124,7 @@ function movieSearch(movie, _type, _year, _pageNumber) {
     }).then(updatePage);
 
     return;
-  } else {
-    return;
-  }
+  } else { return; }
 
   if (_type !== undefined && _type !== "") {
     queryParams.type = _type.trim();
@@ -146,7 +140,7 @@ function movieSearch(movie, _type, _year, _pageNumber) {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  // console.log("-------------------------------------------------");
+  // console.log("---------------[ movieSearch ]-------------------");
   // console.log(queryURL);
   // console.log("-------------------------------------------------");
   lastQuery = queryURL;
@@ -156,7 +150,7 @@ function movieSearch(movie, _type, _year, _pageNumber) {
     method: "GET",
   }).then(updatePage);
   return;
-}
+} // movieSearch
 
 /**
  * 1.3 moviePlot
@@ -175,6 +169,7 @@ function moviePlot(id, movie, plot = "short") {
   if (id === undefined && id === "" && movie === undefined && movie === "") {
     return;
   }
+
   if (id !== undefined && id !== "") {
     queryParams.i = id.trim();
   }
@@ -189,11 +184,10 @@ function moviePlot(id, movie, plot = "short") {
 
   // Combine queryURL with queryParams
   queryURL = queryURL + $.param(queryParams);
-  // console.log("-------------------------------------------------");
+  // console.log("-------------[ moviePlot ]-----------------------");
   // console.log(queryURL);
   // console.log("-------------------------------------------------");
   lastQuery = queryURL;
-
 
   $.ajax({
     url: queryURL,
@@ -213,10 +207,60 @@ function moviePlot(id, movie, plot = "short") {
     $("#" + imdbID).closest('.card').find('.card-text').empty();
     $("#" + imdbID).closest('.card').find('.card-text').append(moviePlot, movieYear, movieRated, movieReleased, movieRuntime);
   });
-}
+} // END moviePlot
 
 /**
- * 1.4 updatePage
+ * 1.4 bandsInTown
+ * Looks up information or events about artist.
+ * @param {string} artistName 
+ * @param {string} response - can be 'info' or 'events'
+ */
+function bandsInTown(artistName, response = "info") {
+  var APPID = "d53820ee5d2ba59f79645ee08586b438";
+
+  // -------------[ Build Query URL ]----------------
+  var queryURL = "https://rest.bandsintown.com/artists/";
+  var queryParams = {};
+  queryParams.app_id = APPID;
+
+  if (artistName !== undefined && artistName !== "") {
+    artistName = encodeURI(artistName.toLowerCase().trim());
+    queryURL += artistName;
+
+    if (response === "events") {
+      queryURL += "/events?";
+    } else {
+      queryURL += "?";
+    }
+
+  } else if (lastQuery !== undefined && lastQuery.split("/").indexOf("rest.bandsintown.com") !== -1) {
+    queryURL = lastQuery;
+
+    $.ajax({
+      url: queryURL,
+      method: "GET",
+    }).then(updatePage);
+    return;
+
+  } else { return; }
+
+  // Combine queryURL with queryParams
+  queryURL = queryURL + $.param(queryParams);
+  // console.log("--------------[ bandsInTown ]--------------------");
+  // console.log(queryURL);
+  // console.log("-------------------------------------------------");
+  lastQuery = queryURL;
+
+  $.ajax({
+    url: queryURL,
+    method: "GET",
+  }).then(updatePage);
+
+  return;
+} // END bandsInTown
+
+/**
+ * 1.5 updatePage
  * This can accept JSON response form api.giphy.com or www.omdbapi.com.
  * @param {JSON} response
  */
@@ -234,9 +278,10 @@ function updatePage(response) {
       return;
     }
 
+    // reverse loop so most recent content shows up first when we do prepend
     for (var i = Data.length - 1; i >= 0; i--) {
       if (i < Data.length - 2 && Data[i].id === Data[i + 1].id) {
-        continue; // prevents doubles from showing
+        continue; // prevents doubles from showing up
       }
 
       var still_image = Data[i].images.original_still.url;
@@ -284,13 +329,69 @@ function updatePage(response) {
       resultsDiv.prepend(MOVIE);
     }
 
-  }
+  } else if (lastQuery.split("/").indexOf("rest.bandsintown.com") !== -1) {
+    // detect empty response
+    if (response === "") { alert("band not found!"); return; }
+
+    if (lastQuery.split("/").pop().includes("events")) {
+
+      if (response.length > 0) {
+        var artistID = response[0].artist_id;
+        var eventsTableBody = $("<tbody>");
+
+        var nextFive = (response.length > 5) ? 5 : response.length;
+        for (var i = 0; i < nextFive; i++) {
+          var eventsRow = $("<tr>");
+
+          // COLUMN 1
+          var eventDate = $("<strong>").text(response[i].datetime);
+          var venueName = $("<p>").text(response[i].venue.name);
+          eventDate = $("<td>").append(eventDate, venueName);
+
+          // COLUMN 2
+          var venueLocation = $("<td>").attr("data-lat", response[i].venue.latitude).attr("data-long", response[i].venue.longitude).text(response[i].venue.city + ", " + response[i].venue.country);
+
+          // COLUMN 3
+          var availableTickets = $("<td>");
+          if (response[i].offers.length > 0) {
+            for (var j = 0; j < response[i].offers.length; j++) {
+              var tickets = $("<button>").addClass("btn btn-secondary btn-sm").attr("onclick", "window.open('" + response[i].offers[j].url + "','_blank')").text(response[i].offers[j].type);
+              availableTickets.append(tickets);
+            }
+          } // END availableTickets loop
+
+          eventsRow.append(eventDate, venueLocation, availableTickets);
+          eventsTableBody.append(eventsRow);
+        } // END response for loop
+
+        eventsTableHead = $("<th>").addClass("text-center").attr("colspan", 3).text("Tour Dates");
+        eventsTableHead = $("<tr>").append(eventsTableHead);
+        eventsTableHead = $("<thead>").append(eventsTableHead);
+
+        var eventsTable = $("<table>").addClass("table table-sm table-dark").append(eventsTableHead, eventsTableBody);
+        $("#" + artistID).closest('.card').find('.card-text').empty();
+        $("#" + artistID).closest('.card').find('.card-text').append(eventsTable);
+
+      } // END if(response.length > 0 ){
+      return;
+    } // END band events table
+
+    var artistImage = $("<img>").addClass("card-img-top band").attr("id", response.id).attr("data-id", response.id).attr("src", response.thumb_url).attr("alt", response.name);
+    artistName = $("<a>").attr("href", response.url).attr("target", "_blank").append(artistName);
+    var artistName = $("<h5>").addClass("card-title").text(response.name);
+    var fansTracking = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(response.tracker_count + " fans tracking this artist");
+    var upcomingEventCount = $("<p>").addClass("card-text font-weight-bold").text(response.upcoming_event_count + " upcoming events");
+
+    var card_body = $("<div>").addClass("card-body text-center").append(artistName, fansTracking, upcomingEventCount);
+    var ARTIST = $("<div>").addClass("card col-lg-6 col-sm-12").append(artistImage, card_body);
+    resultsDiv.prepend(ARTIST);
+  } // END all possible api response results 
 
   return;
-}
+} // END updatePage
 
 /**
- * 1.5 renderButtons
+ * 1.6 renderButtons
  * Renders buttons from both FavoriteTopics array and TOPICS array. 
  * FavoriteTopics array is saved to localStorage to persist the data. 
  */
@@ -319,14 +420,16 @@ function renderButtons() {
   // Save to LocalStorage
   localStorage.setItem("favorites", JSON.stringify(FavoriteTopics));
   return;
-}
+} // END renderButtons
 
 /**
- * reset()
+ * 1.7 reset()
  * If trigger from #reset id then both TOPICS and FavoriteTopics arrays will be reset. 
  * Otherwise only the gif cards will be removed from the page. 
  */
 function reset() {
+  var searchType = $("#search-type").children("option:selected").val();
+
   if ($(this).attr("id") === "reset") {
     TOPICS = defaultTopics.slice(0);
     FavoriteTopics = [];
@@ -334,12 +437,16 @@ function reset() {
 
   renderButtons();
   $("#all-gifs-view").empty();
-  return;
-}
 
+  // revert back to what the user had selected.
+  setTimeout(function () {
+    $("#search-type").val(searchType);
+  }, 150);
+  return;
+} // END reset()
 
 /**
- * deparam
+ * 1.8 deparam
  * returns the reverse of $.param
  */
 deparam = function (querystring) {
@@ -355,7 +462,7 @@ deparam = function (querystring) {
   }
 
   return params;
-};
+}; // END deparam
 
 /**===============[ 2. Document Ready ]==================== 
  * NOTE: $(function(){ === $(document).ready(function() {
@@ -425,6 +532,11 @@ $(function () {
 
       case "movie":
         movieSearch(searchTerm, movieType, movieYear, pageNumber);
+
+        break;
+
+      case "band":
+        bandsInTown(searchTerm);
 
         break;
 
@@ -502,26 +614,41 @@ $(function () {
     moviePlot(imdbID);
   });
 
-  // 2.2.8 Search Type on Change Show Different Parameters
+  // 2.2.8 Get artist upcoming events on click
+  $('#all-gifs-view').on('click', '.band.card-img-top', function () {
+    var artist = $(this).attr("alt");
+    bandsInTown(artist, "events");
+  });
+
+  // 2.2.9 Search Type on Change Show Different Parameters
   $("#search-type").change(function () {
     var searchType = $(this).children("option:selected").val();
 
     switch (searchType) {
       case "gif":
-        $("#movie-search-form").slideUp();
-        $("#gif-search-form").slideDown("slow");
+        $("#movie-search-form").slideUp("slow");
+        $(".navbar-brand").slideDown(1000);
+        $("#gif-search-form").slideDown();
         break;
 
       case "movie":
+        $("#gif-search-form").slideUp("slow");
+        $(".navbar-brand").slideDown(1000);
+        $("#movie-search-form").slideDown();
+        break;
+
+      case "band":
         $("#gif-search-form").slideUp();
-        $("#movie-search-form").slideDown("slow");
+        $("#movie-search-form").slideUp();
+        $(".navbar-brand").slideUp();
         break;
 
       default:
-        $("#movie-search-form").slideUp();
-        $("#gif-search-form").slideDown("slow");
+        $("#movie-search-form").slideUp("slow");
+        $(".navbar-brand").slideDown(1000);
+        $("#gif-search-form").slideDown();
         break;
     }
   }).change(); // Trigger initial change on page load.
 
-});
+}); // END $(document).ready(function())
