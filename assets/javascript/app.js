@@ -2,7 +2,7 @@
  * GifTastic JS
  * @package GifTastic
  * @author Christopher Collins
- * @version 2.4.1
+ * @version 2.4.2
  * @license none (public domain)
  * 
  * ===============[ TABLE OF CONTENTS ]===================

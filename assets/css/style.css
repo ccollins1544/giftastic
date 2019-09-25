@@ -1,7 +1,7 @@
 /**
  * MAIN CSS
  * Author:  Christopher Collins
- * Version: 2.4.1
+ * Version: 2.4.2
  * License: none (public domain)
  */
 /*------------------------------------------------------
@@ -1130,6 +1130,10 @@ img {
 
   #gif-search-form.form-inline .form-check {
     width: auto !important;
+  }
+
+  #add-button-form button.btn {
+    width: calc(50% - 10px);
   }
 }
 
