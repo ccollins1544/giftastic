@@ -33,7 +33,7 @@
  * 
  *********************************************************/
 /* ===============[ 0. GLOBALS ]=========================*/
-var defaultTopics = ["games", "movies", "music", "pokemon", "cartoons", "batman", "sports", "football"];
+var defaultTopics = ["minecraft", "pokemon", "batman", "blink 182"];
 var TOPICS = defaultTopics.slice(0);
 var FavoriteTopics = (localStorage.getItem("favorites") === null) ? [] : JSON.parse(localStorage.getItem("favorites"));
 var lastQuery;
