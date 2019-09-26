@@ -508,9 +508,10 @@ $(function () {
   // 2.2.1 Add gif Button
   $('#add-topic').on('click', function (e) {
     e.preventDefault();
-
     var topic = $('#search-input').val().trim();
     $('#search-input').val("");
+    
+    if(topic === ""){ alert("You must enter a topic first"); return; } // prevent empty buttons from being added
 
     var favorite = parseInt($("#favorite").data('toggled'));
     if (favorite === 1) {
