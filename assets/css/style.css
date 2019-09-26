@@ -226,6 +226,8 @@ select {
 .btn-dark:hover {
   color: var(--button-text);
   border-color: var(--accent-text);
+  background-color: var(--button-background);
+  box-shadow: 3px 3px 5px 0px var(--accent-text);
 }
 
 label {
