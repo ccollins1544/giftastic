@@ -377,7 +377,7 @@ function updatePage(response) {
       return;
     } // END band events table
 
-    var artistImage = $("<img>").addClass("card-img-top band").attr("id", response.id).attr("data-id", response.id).attr("src", response.thumb_url).attr("alt", response.name);
+    var artistImage = $("<img>").addClass("card-img-top band").attr("id", response.id).attr("data-id", response.id).attr("src", response.image_url).attr("alt", response.name);
     artistName = $("<a>").attr("href", response.url).attr("target", "_blank").append(artistName);
     var artistName = $("<h5>").addClass("card-title").text(response.name);
     var fansTracking = $("<h6>").addClass("card-subtitle mb-2 text-muted").text(response.tracker_count + " fans tracking this artist");
